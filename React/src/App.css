@@ -1,50 +1,267 @@
+/* App.css - Estilos generales */
 :root{
---bg:#f6f8fb;
---card:#ffffff;
---muted:#6b7280;
---accent:#2563eb;
---glass: rgba(255,255,255,0.6);
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-600: #1e40af;
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 6px 18px rgba(16,24,40,0.08);
+  --radius: 12px;
+  --max-width: 1200px;
+  --gap: 18px;
+  font-synthesis: none;
 }
-*{box-sizing:border-box}
-body,html,#root{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
 
-
-.app-root{min-height:100%;background:linear-gradient(180deg,var(--bg),#eef2f7);color:#0f172a}
-.site-header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:var(--card);box-shadow:0 6px 18px rgba(15,23,42,0.06);border-bottom:1px solid rgba(15,23,42,0.03)}
-.brand{font-weight:700;font-size:1.1rem}
-.main-nav a{margin-left:18px;color:var(--muted);text-decoration:none}
-
-
-.container{max-width:1100px;margin:28px auto;padding:0 18px}
-.intro h1{margin:4px 0;font-size:1.6rem}
-.lead{color:var(--muted);margin:0 0 14px}
-
-
-.card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.04);margin-bottom:18px}
-.form-card{padding:20px}
-.user-form label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:8px}
-.user-form input{width:100%;padding:10px 12px;border:1px solid #e6e9ef;border-radius:8px;margin-top:6px}
-.form-row{display:flex;gap:12px}
-.form-row label{flex:1}
-.form-actions{margin-top:12px;display:flex;gap:8px}
-.btn{padding:10px 14px;border-radius:10px;border:none;background:#eef2f7;cursor:pointer}
-.btn.primary{background:var(--accent);color:white}
-
-
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-top:10px}
-.user-card{background:var(--card);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center;box-shadow:0 8px 20px rgba(2,6,23,0.04);transition:transform .15s ease,box-shadow .15s ease}
-.user-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(2,6,23,0.08)}
-.avatar img{width:120px;height:70px;object-fit:cover;border-radius:8px}
-.user-info h3{margin:0 0 6px;font-size:1.05rem}
-.user-info .meta{margin:0;color:var(--muted);font-size:0.9rem}
-.user-info .address{margin-top:8px;color:#374151;font-size:0.9rem}
-
-
-.site-footer{padding:20px;text-align:center;color:var(--muted);margin-top:26px}
-
-
-/* Responsive tweaks */
-@media (max-width:640px){
-.form-row{flex-direction:column}
-.avatar img{width:100px;height:60px}
+* { box-sizing: border-box; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+html,body,#root { height:100%; }
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #f6f8ff 0%, var(--bg) 100%);
+  color: #0f172a;
+  -webkit-font-smoothing:antialiased;
+  padding: 32px;
 }
+
+/* Contenedor principal (centra y limita ancho tipo app escritorio) */
+.app-container{
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: 20px;
+}
+
+/* Header */
+.app-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(15,23,42,0.04);
+}
+
+.app-header h1{
+  margin:0;
+  font-size: 20px;
+  letter-spacing: -0.2px;
+}
+.app-header p{
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Nav dentro del header */
+.main-nav{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.main-nav button{
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent-600);
+  transition: all 150ms ease;
+}
+.main-nav button:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.12);
+}
+.main-nav button.active{
+  background: linear-gradient(90deg, var(--accent), var(--accent-600));
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 28px rgba(37,99,235,0.16);
+}
+
+/* Card base */
+.card{
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(15,23,42,0.04);
+}
+
+/* Form card (aparece al seleccionar 'Agregar') */
+.form-card{
+  display: block;
+}
+
+/* Form grid */
+.profile-form{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+.form-group{
+  display:flex;
+  flex-direction: column;
+  gap:6px;
+}
+.form-group label{
+  font-size: 13px;
+  color: var(--muted);
+}
+.form-group input,
+.form-group textarea,
+select{
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.06);
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+.form-group input:focus{
+  border-color: rgba(37,99,235,0.85);
+  box-shadow: 0 6px 18px rgba(37,99,235,0.08);
+}
+
+/* Full width for some form rows */
+.full-width{
+  grid-column: 1 / -1;
+}
+
+/* Submit button */
+.btn-submit{
+  background: linear-gradient(90deg, var(--accent), var(--accent-600));
+  color: white;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(37,99,235,0.12);
+  transition: transform 120ms ease;
+}
+.btn-submit:hover{ transform: translateY(-2px); }
+
+/* GRID DE CARDS: 4 columnas en pantallas grandes */
+.cards-grid{
+  display: grid;
+  gap: 18px;
+  margin-top: 6px;
+  /* base: 1 columna (mobile) */
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* CARD USUARIO */
+.user-card{
+  position: relative;
+  overflow: hidden;
+  display:flex;
+  flex-direction: column;
+  min-height: 220px;
+}
+
+/* Botón eliminar (esquina superior derecha) */
+.btn-delete{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: rgba(239,68,68,0.08);
+  color: var(--danger);
+  border: 1px solid rgba(239,68,68,0.12);
+  width:34px;
+  height:34px;
+  border-radius: 8px;
+  font-size: 20px;
+  line-height: 0;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  z-index:2;
+}
+.btn-delete:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(239,68,68,0.12);
+}
+
+/* Header de la card (imagen) */
+.user-card-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(37,99,235,0.05), rgba(37,99,235,0.02));
+  border-bottom: 1px solid rgba(15,23,42,0.03);
+}
+.user-avatar{
+  width: 84px;
+  height: 84px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+}
+
+/* Body de la card */
+.user-card-body{
+  padding: 12px 12px 18px 12px;
+  display:flex;
+  flex-direction: column;
+  gap:8px;
+  flex:1;
+}
+.user-name{
+  margin:0;
+  font-size: 16px;
+  font-weight: 700;
+}
+.user-email{
+  margin:0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.user-details{
+  list-style:none;
+  padding:0;
+  margin: 6px 0 0 0;
+  display:flex;
+  gap: 12px;
+  flex-wrap:wrap;
+  color: var(--muted);
+  font-size: 13px;
+}
+.user-details li{
+  background: rgba(15,23,42,0.03);
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+/* RESPONSIVE: 2 columnas tablet, 3 columnas laptop, 4 columnas escritorio grande */
+@media (min-width: 640px){
+  .cards-grid{ grid-template-columns: repeat(2, 1fr); }
+  .profile-form{ grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px){
+  .cards-grid{ grid-template-columns: repeat(3, 1fr); }
+  .app-header h1{ font-size: 22px; }
+}
+
+@media (min-width: 1150px){
+  .cards-grid{ grid-template-columns: repeat(4, 1fr); }
+  .profile-form{ grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Pequeños ajustes visuales */
+.card h3{ margin:0; font-size:16px; }
+.card p{ color: var(--muted); font-size:13px; margin:6px 0 0 0; }

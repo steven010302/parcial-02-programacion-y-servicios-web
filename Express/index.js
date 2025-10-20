@@ -3,7 +3,8 @@ require("dotenv").config();
 const Usuarios = require('./Data/Usuarios')
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
+
 
 
 // Middleware
@@ -15,10 +16,6 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
 });
-
-app.use(express.json());
-
-
 
 
 app.get('/', (req, res) => {
@@ -60,16 +57,43 @@ app.get('/users/:User_ID', (req, res) => {
 
 app.post('/AgregarUsuarios', (req, res) => {
     const { name, phone, email, address, age, photoURL } = req.body;
-    const Usuario = { User_ID: (Usuarios.length + 1).toString(), name, phone, email, address, age, photoURL };
-    Usuarios.push(Usuario);
+    const maxID = Usuarios.length > 0 ? Math.max(...Usuarios.map(u => u.User_ID)) : 0;
+    const newID = maxID + 1;
+    const Usuario = { 
+        User_ID: newID, name, phone, email, address, age, photoURL 
+    };
+    Usuarios.unshift(Usuario);
     res.json({
         message: 'User add',
-        timestamp: new Date().toISOString(),
-        status: 'succes',
+	timestamp: new Date().toISOString(),
+        status: 'success',
         Usuarios: Usuario
     });
 });
 
 app.listen(PORT, () => {
-    console.log(`ServUser_IDor en http://localhost:${PORT}`);
+    console.log(`servidor en http://localhost:${PORT}`);
+});
+const Delete_user = (req, res) => {
+    const { User_ID } = req.params;
+    const userIndex = Usuarios.findIndex((u) => u.User_ID === parseInt(User_ID));
+
+    if (userIndex === -1) {
+        return res.status(404).json({
+            message: `User for id = ${User_ID} not found`,
+            Success: 'false',
+        });
+    }
+
+    const [deletedUser] = Usuarios.splice(userIndex, 1);
+    res.status(200).json({
+        message: 'usuario eliminado',
+        status: 'true',
+    });
+};
+
+app.delete('/users/:User_ID', Delete_user);
+
+app.listen(PORT, () => {
+    console.log(`Servidor en http://localhost:${PORT}`);
 });

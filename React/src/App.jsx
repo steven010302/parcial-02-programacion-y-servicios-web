@@ -1,66 +1,115 @@
-
-import { Card } from './components/card'
 import React, { useEffect, useState } from 'react';
+import './App.css';
+const Backend = 'http://localhost:3000';
 
 
-return (
-  <div className="app-root">
-    <header className="site-header">
-      <div className="brand">UserCards Pro</div>
-      <nav className="main-nav">
-        <a href="#">Inicio</a>
-        <a href="#cards">Usuarios</a>
-        <a href="#add">Agregar</a>
-      </nav>
-    </header>
+function App(){
+  const [users, setUsers] = useState([]);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserEmail, setNewUserEmail] = useState('');
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+ const getUsers = async () => {
+    try { 
+      const response = await fetch(`${Backend}/users`);
+      const data = await response.json();
+      if (data.users) {
+        setUsers(data.users);
+      }
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error);
+    }
+  }
 
 
-    <main className="container">
-      <section className="intro">
-        <h1>Lista de usuarios</h1>
-        <p className="lead">Panel profesional para visualizar y agregar usuarios en tarjetas responsivas.</p>
-      </section>
+  const handleAddUser = async (e) => {
+    e.preventDefault(); 
+    const newUser = { 
+      name: newUserName, 
+      email: newUserEmail 
+    };
+
+    const response = await fetch(`${Backend}/users`, { 
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser)
+    });
+    const data = await response.json();
+    
+    
+    setUsers(prevUsers => [data.Usuarios ,prevUsers ]);
+    
+    setNewUserName('');
+    setNewUserEmail('');
+  }
 
 
-      <section id="add" className="card form-card">
-        <h2>Agregar usuario</h2>
-        <form onSubmit={handleSubmit} className="user-form">
-          <div className="form-row">
-            <label>Nombre<input name="name" value={form.name} onChange={handleChange} /></label>
-            <label>Email<input name="email" value={form.email} onChange={handleChange} /></label>
-          </div>
-          <div className="form-row">
-            <label>Dirección<input name="Address" value={form.Address} onChange={handleChange} /></label>
-            <label>Edad<input name="age" type="number" value={form.age} onChange={handleChange} /></label>
-          </div>
-          <label>Foto URL<input name="photoURL" value={form.photoURL} onChange={handleChange} placeholder="Opcional: URL de la imagen" /></label>
-          <div className="form-actions">
-            <button type="submit" className="btn primary">Agregar</button>
-            <button type="button" className="btn" onClick={() => setForm({ name: '', email: '', Address: '', age: '', photoURL: '' })}>Limpiar</button>
-          </div>
+  const handleDelete = async (userId) => {
+    if (!window.confirm("¿Seguro que quieres eliminar este usuario?")) {
+      return; 
+    }
+    
+    await fetch(`${Backend}/users/${userId}`, { 
+      method: 'DELETE',
+    });
+    
+
+    setUsers(prevUsers => prevUsers.filter(user => user.User_ID !== userId));
+  }
+
+  return (
+    <main className="app-container">
+      
+      <h1>Gestor de Usuarios</h1>
+
+      
+      <section className="card form-card">
+        <h3>Agregar nuevo usuario</h3>
+        <form onSubmit={handleAddUser}>
+          <input
+            type="text"
+            placeholder="Nombre"
+            value={newUserName}
+            onChange={(e) => setNewUserName(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={newUserEmail}
+            onChange={(e) => setNewUserEmail(e.target.value)}
+            required
+          />
+          <button type="submit">Agregar</button>
         </form>
       </section>
 
+      <section className="cards-grid">
+        {users.map((user) => (
+          
+          <article key={user.User_ID} className="card user-card">
+            
+            
+            <button 
+              className="btn-delete" 
+              onClick={() => handleDelete(user.User_ID)}
+            >
+              &times; 
+            </button>
+            
+            
+            <h2>{user.name}</h2>
+            <p>{user.email}</p>
 
-      <section id="cards" className="cards-grid">
-        {users.map(user => (
-          <article key={user.User_ID} className="user-card">
-            <div className="avatar">
-              <img src={user.photoURL || `https://via.placeholder.com/180x100?text=${encodeURIComponent(user.name)}`} alt={user.name} />
-            </div>
-            <div className="user-info">
-              <h3>{user.name}</h3>
-              <p className="meta">{user.email} · {user.age} años</p>
-              <p className="address">{user.Address}</p>
-            </div>
           </article>
         ))}
       </section>
+
     </main>
+  );
+}
 
-
-    <footer className="site-footer">© {new Date().getFullYear()} UserCards Pro — Hecho con Express + React</footer>
-  </div>
-);
-
-export default App
+export default App;
